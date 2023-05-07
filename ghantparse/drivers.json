@@ -1,0 +1,18 @@
+{
+    "linux64_chromedriver_101.0.4951.41_for_101.0.4951": {
+        "timestamp": "23/05/2022",
+        "binary_path": "/usr/src/app/drivers/chromedriver/linux64/101.0.4951.41/chromedriver"
+    },
+    "linux64_chromedriver_102.0.5005.61_for_102.0.5005": {
+        "timestamp": "13/06/2022",
+        "binary_path": "/usr/src/app/drivers/chromedriver/linux64/102.0.5005.61/chromedriver"
+    },
+    "linux64_chromedriver_103.0.5060.53_for_103.0.5060": {
+        "timestamp": "20/07/2022",
+        "binary_path": "/usr/src/app/drivers/chromedriver/linux64/103.0.5060.53/chromedriver"
+    },
+    "linux64_chromedriver_103.0.5060.134_for_103.0.5060": {
+        "timestamp": "21/07/2022",
+        "binary_path": "/usr/src/app/drivers/chromedriver/linux64/103.0.5060.134/chromedriver"
+    }
+}

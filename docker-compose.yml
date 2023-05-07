@@ -1,0 +1,87 @@
+version: "2"
+
+services:
+  redis:
+    container_name: redis
+    image: "redis"
+    restart: always
+
+  selenoid:
+    container_name: selenoid
+    image: "aerokube/selenoid:1.10.7"
+    restart: always
+    network_mode: bridge
+    ports:
+      - "4444:4444"
+    volumes:
+      - ".:/etc/selenoid/" # assumed current dir contains browser.json
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      - "./connectservice/tmp/wd:/opt/selenoid/logs"  # logs for selenoid session
+      - "./connectservice/tmp/wd:/logs"
+    command: ["-max-timeout", "876000h", "-log-output-dir", "/opt/selenoid/logs/"]
+
+  selenoid-ui:
+    depends_on:
+      - selenoid
+    image: "aerokube/selenoid-ui"
+    network_mode: bridge
+    env_file:
+      - web-variables.env
+    ports:
+      - "8080:8080"
+    command: ["--selenoid-uri", "http://${IPSERVER}:4444"]
+
+  connectservice:
+    depends_on:
+      - selenoid-ui
+      - redis
+    build: "./connectservice"
+    container_name: "connectservice"
+    restart: always
+    env_file:
+      - web-variables.env
+    volumes:
+      - './connectservice/tmp:/connectservice/tmp'
+    ports:
+      - "8765:8765"
+    environment:
+      PYTHONUNBUFFERED: 1
+    command: ['python', '-u', 'socket-server.py']
+
+  ghuntservice:
+    build: "./ghantparse"
+    container_name: "ghantparse"
+    restart: always
+    volumes:
+    - "./ghantparse/resources:/usr/src/app/resources"
+    - "./tmp:/gtmp"
+    - "./ghantparse:/usr/src/app/"
+    ports:
+    - "10101:10101"
+    environment:
+      PYTHONUNBUFFERED: 1
+    command: ['python', '-u', 'g_server.py']
+
+  sherlock:
+    build: "./sherlock"
+    container_name: "sherlock"
+    restart: always
+    volumes:
+      - "./sherlock/results:/opt/sherlock/results"
+    environment:
+      PYTHONUNBUFFERED: 1
+    command: ['python', '-u', 'sh_server.py']
+
+  www_whatsapp:
+    depends_on:
+      - selenoid-ui
+    build: "./www_whatsapp"
+    container_name: "www_whatsapp"
+    restart: always
+    env_file:
+      - web-variables.env
+    volumes:
+      - "./www_whatsapp/tmp:/wsserver/tmp"
+    environment:
+      PYTHONUNBUFFERED: 1
+    command: [ 'python', '-u', 'wapp_server.py' ]

@@ -1,0 +1,25 @@
+{
+  "chrome": {
+    "default": "96.0.4664.45",
+    "versions": {
+      "96.0.4664.45": {
+        "image": "selenoid/chrome",
+        "port": "4444",
+        "path": "/",
+        "tmpfs": {
+          "/tmp": "size=128m"
+        }
+      }
+    }
+  },
+  "android": {
+        "default": "10.0",
+        "versions": {
+            "10.0": {
+                "image": "selenoid/android:10.0",
+                "port": "4444",
+                "path": "/wd/hub"
+            }
+        }
+    }
+}
